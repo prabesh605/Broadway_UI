@@ -11,7 +11,9 @@ class AvatarService {
       );
       if (response.statusCode == 200) {
         final List jsonData = jsonDecode(response.body);
+
         final data = jsonData.map((e) => AvatarModel.fromJson(e)).toList();
+
         return data;
       } else {
         throw Exception("Error");

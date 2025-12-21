@@ -11,20 +11,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:broadway_example_ui/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
+  testWidgets("Counter increments", (tester) async {
+    await tester.pumpWidget(MaterialApp(home: Counter()));
     expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.text("Increment"));
     await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
+  });
+  testWidgets("Enter text in TextField", (tester) async {
+    await tester.pumpWidget(MaterialApp(home: EmailField()));
+    await tester.enterText(find.byKey(Key("email")), "test@gmail.com");
+    await tester.pump();
+    expect(find.text("test@gmail.com"), findsOneWidget);
   });
 }
