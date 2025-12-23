@@ -1,3 +1,4 @@
+import 'package:broadway_example_ui/todo/todo_screen.dart';
 import 'package:broadway_example_ui/users/user_model.dart';
 import 'package:broadway_example_ui/users/user_service.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,20 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("User Screen")),
+      appBar: AppBar(
+        title: Text("User Screen"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TodoScreen()),
+              );
+            },
+            icon: Icon(Icons.abc),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           ElevatedButton(
