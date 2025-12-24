@@ -1,4 +1,5 @@
 import 'package:broadway_example_ui/database/database.dart';
+import 'package:broadway_example_ui/todo/todo_database.dart';
 import 'package:broadway_example_ui/todo/todo_model.dart';
 import 'package:broadway_example_ui/users/user_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,11 @@ class _TodoScreenState extends State<TodoScreen> {
   final titleController = TextEditingController();
   final bodyController = TextEditingController();
 
+  final updateTitleController = TextEditingController();
+  final updateBodyController = TextEditingController();
+
+  TodoDatabase database = TodoDatabase();
+
   List<TodoModel> todos = [];
   @override
   void initState() {
@@ -22,11 +28,64 @@ class _TodoScreenState extends State<TodoScreen> {
   }
 
   Future<void> getTodoData() async {
-    final data = await DBHelper.instance.getTodos();
+    final data = await database.getTodos();
     setState(() {
       todos = data;
       // todos.add(data);
     });
+  }
+
+  showUpdateBottomSheet(int id) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Update Todo Data",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: updateTitleController,
+                decoration: InputDecoration(
+                  label: Text("Title"),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: updateBodyController,
+                decoration: InputDecoration(
+                  label: Text("Body"),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  final todoData = TodoModel(
+                    id: id,
+                    title: updateTitleController.text,
+                    body: updateBodyController.text,
+                  );
+                  final result = await database.update(todoData);
+                  if (result > 0) {
+                    getTodoData();
+                  }
+                  Navigator.pop(context);
+                },
+                child: Text("Update"),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -58,7 +117,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 final title = titleController.text;
                 final body = bodyController.text;
                 final data = TodoModel(title: title, body: body);
-                final value = await DBHelper.instance.insertTodo(data);
+                final value = await database.insertTodo(data);
 
                 titleController.clear();
                 bodyController.clear();
@@ -83,11 +142,19 @@ class _TodoScreenState extends State<TodoScreen> {
                 itemBuilder: (context, index) {
                   final todo = todos[index];
                   return ListTile(
+                    leading: IconButton(
+                      onPressed: () {
+                        updateTitleController.text = todo.title;
+                        updateBodyController.text = todo.body;
+                        showUpdateBottomSheet(todo.id ?? 0);
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
                     title: Text(todo.title),
                     subtitle: Text(todo.body),
                     trailing: IconButton(
                       onPressed: () {
-                        DBHelper.instance.delete(todo.id ?? 0);
+                        database.delete(todo.id ?? 0);
                         setState(() {
                           todos.removeAt(index);
                         });
