@@ -11,6 +11,10 @@ class TodoModel {
   static const tableName = 'Todo';
   static const createTable =
       '''
-    Create Table $tableName(id INTEGER PRIMARY KEY, title TEXT, body TEXT)
+    Create Table $tableName(
+    id INTEGER PRIMARY KEY,
+     title TEXT,
+      body TEXT
+      )
 ''';
 }
