@@ -17,7 +17,7 @@ class _NextScreenState extends State<NextScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Hero(
-              tag: "flower",
+              tag: "animation",
 
               child: Image.asset("assets/flower.png", height: 100),
             ),
