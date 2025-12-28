@@ -1,3 +1,4 @@
+import 'package:broadway_example_ui/animation_screen.dart';
 import 'package:broadway_example_ui/avatars/avatar_screen.dart';
 import 'package:broadway_example_ui/expenses_tracker.dart';
 import 'package:broadway_example_ui/login_screen.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: LoginScreen());
+    return MaterialApp(home: AnimationScreen());
   }
 }
 
