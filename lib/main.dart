@@ -5,14 +5,27 @@ import 'package:broadway_example_ui/login_screen.dart';
 import 'package:broadway_example_ui/mobile/mobile_screen.dart';
 import 'package:broadway_example_ui/next_screen.dart';
 import 'package:broadway_example_ui/note/note_screen.dart';
+import 'package:broadway_example_ui/provider/counter_provider.dart';
+import 'package:broadway_example_ui/provider/counter_screen_with_provider.dart';
+import 'package:broadway_example_ui/provider/counter_screen_without.dart';
+import 'package:broadway_example_ui/provider/theme_provider.dart';
 import 'package:broadway_example_ui/todo/todo_screen.dart';
 import 'package:broadway_example_ui/users/user_screen.dart';
 import 'package:broadway_example_ui/views/bmi_calculator_screen.dart';
 import 'package:broadway_example_ui/weather/weather_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CounterProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +33,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: AnimationScreen());
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return MaterialApp(
+      themeMode: themeProvider.themeMode,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: CounterScreenWithProvider(),
+    );
   }
 }
 

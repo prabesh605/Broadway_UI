@@ -1,3 +1,5 @@
+import 'package:broadway_example_ui/provider/counter_screen_with_provider.dart';
+import 'package:broadway_example_ui/provider/counter_screen_without.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -54,40 +56,61 @@ class _AnimationScreenState extends State<AnimationScreen>
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: GestureDetector(
-            onTap: () => animatedBox(),
-            child: Column(
-              children: [
-                Column(children: AnimateList(
-  interval: 400.ms,
-  effects: [FadeEffect(duration: 300.ms)],
-  children: [Text("Hello"), Text("World"),  Text("Goodbye")],
-)),
-
-                AnimatedBuilder(
-                  animation: animation,
-                  builder: (context, child) {
-                    return Align(
-                      alignment: animation.value,
-                      child: AnimatedBuilder(
-                        animation: colorAnimation,
-                        builder: (BuildContext context, Widget? child) {
-                          return Container(
-                            height: 100,
-                            width: 100,
-                            color: colorAnimation.value,
-
-                            // height: animation.value,
-                            // width: animation.value,
-                            // color: animation.value,
-                          );
-                        },
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () => animatedBox(),
+                child: Column(
+                  children: [
+                    Column(
+                      children: AnimateList(
+                        interval: 400.ms,
+                        effects: [FadeEffect(duration: 300.ms)],
+                        children: [
+                          Text("Hello"),
+                          Text("World"),
+                          Text("Goodbye"),
+                        ],
                       ),
-                    );
-                  },
+                    ),
+
+                    AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        return Align(
+                          alignment: animation.value,
+                          child: AnimatedBuilder(
+                            animation: colorAnimation,
+                            builder: (BuildContext context, Widget? child) {
+                              return Container(
+                                height: 100,
+                                width: 100,
+                                color: colorAnimation.value,
+
+                                // height: animation.value,
+                                // width: animation.value,
+                                // color: animation.value,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CounterScreenWithProvider(),
+                    ),
+                  );
+                },
+                child: Text("Counter"),
+              ),
+            ],
           ),
 
           // child: Transform.rotate(
