@@ -1,5 +1,6 @@
 import 'package:broadway_example_ui/provider/counter_screen_with_provider.dart';
 import 'package:broadway_example_ui/provider/counter_screen_without.dart';
+import 'package:broadway_example_ui/weather/weather_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -103,9 +104,7 @@ class _AnimationScreenState extends State<AnimationScreen>
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => CounterScreenWithProvider(),
-                    ),
+                    MaterialPageRoute(builder: (context) => WeatherScreen()),
                   );
                 },
                 child: Text("Counter"),

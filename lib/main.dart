@@ -8,10 +8,12 @@ import 'package:broadway_example_ui/note/note_screen.dart';
 import 'package:broadway_example_ui/provider/counter_provider.dart';
 import 'package:broadway_example_ui/provider/counter_screen_with_provider.dart';
 import 'package:broadway_example_ui/provider/counter_screen_without.dart';
+import 'package:broadway_example_ui/provider/task_provider.dart';
 import 'package:broadway_example_ui/provider/theme_provider.dart';
 import 'package:broadway_example_ui/todo/todo_screen.dart';
 import 'package:broadway_example_ui/users/user_screen.dart';
 import 'package:broadway_example_ui/views/bmi_calculator_screen.dart';
+import 'package:broadway_example_ui/weather/weather_provider.dart';
 import 'package:broadway_example_ui/weather/weather_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => CounterProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
       child: MyApp(),
     ),
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeProvider.themeMode,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: CounterScreenWithProvider(),
+      home: WeatherScreen(),
     );
   }
 }
