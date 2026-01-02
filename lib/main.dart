@@ -1,6 +1,10 @@
 import 'package:broadway_example_ui/animation_screen.dart';
 import 'package:broadway_example_ui/avatars/avatar_screen.dart';
+import 'package:broadway_example_ui/counter%20with%20bloc/counter_bloc.dart';
+import 'package:broadway_example_ui/counter%20with%20bloc/counter_screen_bloc.dart';
 import 'package:broadway_example_ui/expenses_tracker.dart';
+import 'package:broadway_example_ui/login%20with%20bloc/login_bloc.dart';
+import 'package:broadway_example_ui/login%20with%20bloc/login_screen_bloc.dart';
 import 'package:broadway_example_ui/login_screen.dart';
 import 'package:broadway_example_ui/mobile/mobile_screen.dart';
 import 'package:broadway_example_ui/next_screen.dart';
@@ -10,22 +14,27 @@ import 'package:broadway_example_ui/provider/counter_screen_with_provider.dart';
 import 'package:broadway_example_ui/provider/counter_screen_without.dart';
 import 'package:broadway_example_ui/provider/task_provider.dart';
 import 'package:broadway_example_ui/provider/theme_provider.dart';
+import 'package:broadway_example_ui/theme_bloc.dart';
 import 'package:broadway_example_ui/todo/todo_screen.dart';
 import 'package:broadway_example_ui/users/user_screen.dart';
 import 'package:broadway_example_ui/views/bmi_calculator_screen.dart';
 import 'package:broadway_example_ui/weather/weather_provider.dart';
 import 'package:broadway_example_ui/weather/weather_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CounterProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => TaskProvider()),
-        ChangeNotifierProvider(create: (_) => WeatherProvider()),
+        BlocProvider(create: (_) => CounterCubit()),
+        BlocProvider(create: (_) => LoginCubit()),
+        BlocProvider(create: (_) => ThemeCubit()),
+        // ChangeNotifierProvider(create: (_) => CounterProvider()),
+        // ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        // ChangeNotifierProvider(create: (_) => TaskProvider()),
+        // ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
       child: MyApp(),
     ),
@@ -37,12 +46,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    return MaterialApp(
-      themeMode: themeProvider.themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      home: WeatherScreen(),
+    // final themeProvider = Provider.of<ThemeProvider>(context);
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, state) {
+        return MaterialApp(
+          themeMode: state,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          home: LoginScreenBloc(),
+        );
+      },
     );
   }
 }
