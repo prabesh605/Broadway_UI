@@ -1,20 +1,17 @@
-import 'package:broadway_example_ui/login%20with%20bloc/login_bloc.dart';
-import 'package:broadway_example_ui/login%20with%20bloc/login_event.dart';
-import 'package:broadway_example_ui/login%20with%20bloc/login_state.dart';
-import 'package:broadway_example_ui/login%20with%20bloc/result_screen.dart';
+import 'package:broadway_example_ui/login%20with%20cubit/login_cubit.dart';
+import 'package:broadway_example_ui/login%20with%20cubit/login_state.dart';
 import 'package:broadway_example_ui/theme_bloc.dart';
-import 'package:broadway_example_ui/views/result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginScreenBloc extends StatefulWidget {
-  const LoginScreenBloc({super.key});
+class LoginScreenCubit extends StatefulWidget {
+  const LoginScreenCubit({super.key});
 
   @override
-  State<LoginScreenBloc> createState() => _LoginScreenCubitState();
+  State<LoginScreenCubit> createState() => _LoginScreenCubitState();
 }
 
-class _LoginScreenCubitState extends State<LoginScreenBloc> {
+class _LoginScreenCubitState extends State<LoginScreenCubit> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController paswordController = TextEditingController();
 
@@ -47,17 +44,12 @@ class _LoginScreenCubitState extends State<LoginScreenBloc> {
                 final email = emailController.text;
                 final password = paswordController.text;
                 if (email.isNotEmpty && password.isNotEmpty) {
-                  context.read<LoginBloc>().add(LoginData(email, password));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ResultBLocScreen()),
-                  );
+                  context.read<LoginCubit>().login(email, password);
                 }
               },
               child: Text('Login'),
             ),
-
-            BlocBuilder<LoginBloc, LoginState>(
+            BlocBuilder<LoginCubit, LoginState>(
               builder: (context, state) {
                 if (state is LoginLoading) {
                   return Center(child: CircularProgressIndicator());

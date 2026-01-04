@@ -2,9 +2,13 @@ import 'package:broadway_example_ui/animation_screen.dart';
 import 'package:broadway_example_ui/avatars/avatar_screen.dart';
 import 'package:broadway_example_ui/counter%20with%20bloc/counter_bloc.dart';
 import 'package:broadway_example_ui/counter%20with%20bloc/counter_screen_bloc.dart';
+import 'package:broadway_example_ui/counter%20with%20cubit/counter_cubit.dart';
+import 'package:broadway_example_ui/counter%20with%20cubit/counter_screen_cubit.dart';
 import 'package:broadway_example_ui/expenses_tracker.dart';
 import 'package:broadway_example_ui/login%20with%20bloc/login_bloc.dart';
 import 'package:broadway_example_ui/login%20with%20bloc/login_screen_bloc.dart';
+import 'package:broadway_example_ui/login%20with%20cubit/login_cubit.dart';
+import 'package:broadway_example_ui/login%20with%20cubit/login_screen_cubit.dart';
 import 'package:broadway_example_ui/login_screen.dart';
 import 'package:broadway_example_ui/mobile/mobile_screen.dart';
 import 'package:broadway_example_ui/next_screen.dart';
@@ -31,6 +35,8 @@ void main() {
         BlocProvider(create: (_) => CounterCubit()),
         BlocProvider(create: (_) => LoginCubit()),
         BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => LoginBloc()),
+        BlocProvider(create: (_) => CounterBloc()),
         // ChangeNotifierProvider(create: (_) => CounterProvider()),
         // ChangeNotifierProvider(create: (_) => ThemeProvider()),
         // ChangeNotifierProvider(create: (_) => TaskProvider()),
@@ -53,7 +59,7 @@ class MyApp extends StatelessWidget {
           themeMode: state,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
-          home: LoginScreenBloc(),
+          home: CounterScreenBloc(),
         );
       },
     );

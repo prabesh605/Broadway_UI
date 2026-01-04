@@ -1,12 +1,14 @@
+import 'package:broadway_example_ui/counter%20with%20bloc/counter_event.dart';
+import 'package:broadway_example_ui/counter%20with%20bloc/counter_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(0);
-  void increment() {
-    emit(state + 1);
-  }
-
-  void decrement() {
-    emit(state - 1);
+class CounterBloc extends Bloc<CounterEvent, CounterState> {
+  CounterBloc() : super(CounterState(0)) {
+    on<Increament>((event, emit) {
+      emit(CounterState(state.value + 1));
+    });
+    on<Decrement>((event, emit) {
+      emit(CounterState(state.value - 1));
+    });
   }
 }

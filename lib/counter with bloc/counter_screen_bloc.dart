@@ -1,4 +1,8 @@
 import 'package:broadway_example_ui/counter%20with%20bloc/counter_bloc.dart';
+import 'package:broadway_example_ui/counter%20with%20bloc/counter_event.dart';
+import 'package:broadway_example_ui/counter%20with%20bloc/counter_state.dart';
+import 'package:broadway_example_ui/main.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +18,7 @@ class _CounterScreenBlocState extends State<CounterScreenBloc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<CounterCubit, int>(
+      body: BlocBuilder<CounterBloc, CounterState>(
         builder: (context, state) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -24,36 +28,21 @@ class _CounterScreenBlocState extends State<CounterScreenBloc> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      context.read<CounterCubit>().decrement();
-                      // setState(() {
-                      //   count--;
-                      // });
+                      context.read<CounterBloc>().add(Decrement());
                     },
                     child: Text("Remove"),
                   ),
 
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Text("$state"),
+                    child: Text("${state.value}"),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<CounterCubit>().increment();
-                      // setState(() {
-                      //   count++;
-                      // });
+                      context.read<CounterBloc>().add(Increament());
                     },
                     child: Text("Add"),
                   ),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => HomeScreen()),
-                  //     );
-                  //   },
-                  //   child: Text("Next"),
-                  // ),
                 ],
               ),
             ],
