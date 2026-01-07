@@ -5,7 +5,9 @@ import 'package:broadway_example_ui/counter%20with%20bloc/counter_screen_bloc.da
 import 'package:broadway_example_ui/counter%20with%20cubit/counter_cubit.dart';
 import 'package:broadway_example_ui/counter%20with%20cubit/counter_screen_cubit.dart';
 import 'package:broadway_example_ui/expenses_tracker.dart';
+import 'package:broadway_example_ui/for%20firebase/firebase_service.dart';
 import 'package:broadway_example_ui/for%20firebase/user_firebase_screen.dart';
+import 'package:broadway_example_ui/for%20firebase/userss_bloc.dart';
 import 'package:broadway_example_ui/login%20with%20bloc/login_bloc.dart';
 import 'package:broadway_example_ui/login%20with%20bloc/login_screen_bloc.dart';
 import 'package:broadway_example_ui/login%20with%20cubit/login_cubit.dart';
@@ -50,6 +52,7 @@ Future<void> main() async {
         BlocProvider(
           create: (_) => WeatherBloc(WeatherService(), WeatherBrain()),
         ),
+        BlocProvider(create: (_) => UserssBloc(FirebaseService())),
         // ChangeNotifierProvider(create: (_) => CounterProvider()),
         // ChangeNotifierProvider(create: (_) => ThemeProvider()),
         // ChangeNotifierProvider(create: (_) => TaskProvider()),
