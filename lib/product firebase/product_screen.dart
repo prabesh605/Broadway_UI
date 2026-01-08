@@ -1,30 +1,36 @@
 import 'package:broadway_example_ui/for%20firebase/firebase_service.dart';
-import 'package:broadway_example_ui/for%20firebase/user_fireabase_model.dart';
 import 'package:broadway_example_ui/for%20firebase/userss_bloc.dart';
-import 'package:broadway_example_ui/for%20firebase/userss_event.dart';
 import 'package:broadway_example_ui/for%20firebase/userss_state.dart';
+import 'package:broadway_example_ui/product%20firebase/product_bloc.dart';
+import 'package:broadway_example_ui/product%20firebase/product_event.dart';
+import 'package:broadway_example_ui/product%20firebase/product_model.dart';
+import 'package:broadway_example_ui/product%20firebase/product_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FirebaseUser extends StatefulWidget {
-  const FirebaseUser({super.key});
+class ProductScreen extends StatefulWidget {
+  const ProductScreen({super.key});
 
   @override
-  State<FirebaseUser> createState() => _FirebaseUserState();
+  State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _FirebaseUserState extends State<FirebaseUser> {
-  // List<Map<String, dynamic>> users = [];
+class _ProductScreenState extends State<ProductScreen> {
   // List<UserFirebaseModel> users = [];
   FirebaseService service = FirebaseService();
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
+  final priceController = TextEditingController();
+  final imageController = TextEditingController();
+  final descriptionController = TextEditingController();
+
   final nameUpdateController = TextEditingController();
-  final emailUpdateController = TextEditingController();
+  final priceUpdateController = TextEditingController();
+  final imageUpdateController = TextEditingController();
+  final descriptionUpdateController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    context.read<UserssBloc>().add(GetUserss());
+    context.read<ProductBloc>().add(GetProducts());
   }
 
   void showUpdataBottomSheet(String id) {
@@ -47,9 +53,25 @@ class _FirebaseUserState extends State<FirebaseUser> {
               ),
               SizedBox(height: 20),
               TextFormField(
-                controller: emailUpdateController,
+                controller: priceUpdateController,
                 decoration: InputDecoration(
                   label: Text("Email"),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: imageUpdateController,
+                decoration: InputDecoration(
+                  label: Text("Image"),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: descriptionUpdateController,
+                decoration: InputDecoration(
+                  label: Text("Decription"),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -57,13 +79,13 @@ class _FirebaseUserState extends State<FirebaseUser> {
               ElevatedButton(
                 onPressed: () {
                   final name = nameUpdateController.text;
-                  final email = emailUpdateController.text;
-                  final data = UserFirebaseModel(
-                    id: id,
-                    name: name,
-                    email: email,
-                  );
-                  context.read<UserssBloc>().add(UpdateUserss(data));
+                  final email = priceUpdateController.text;
+                  // final data = UserFirebaseModel(
+                  //   id: id,
+                  //   name: name,
+                  //   email: email,
+                  // );
+                  // context.read<UserssBloc>().add(UpdateUserss(data));
                   // service.updateUserss(data);
                   Navigator.pop(context);
                 },
@@ -94,52 +116,54 @@ class _FirebaseUserState extends State<FirebaseUser> {
             ),
             SizedBox(height: 20),
             TextFormField(
-              controller: emailController,
+              controller: priceController,
               decoration: InputDecoration(
-                label: Text("Email"),
+                label: Text("Price"),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: imageController,
+              decoration: InputDecoration(
+                label: Text("Image"),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                label: Text("Description"),
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                final data = UserFirebaseModel(
+                final value = ProductModel(
+                  id: "",
                   name: nameController.text,
-                  email: emailController.text,
+                  price: double.parse(priceController.text),
+                  image: imageController.text,
+                  description: descriptionController.text,
                 );
-                // final Map<String, dynamic> json = {
-                //   'name': nameController.text,
-                //   'email': emailController.text,
-                // };
-                context.read<UserssBloc>().add(SaveUserss(data));
-                // service.addUsersWithModel(data);
+                context.read<ProductBloc>().add(AddProduct(value));
                 nameController.clear();
-                emailController.clear();
+                priceController.clear();
               },
               child: Text("Save"),
             ),
 
-            // ElevatedButton(
-            //   onPressed: () async {
-            //     context.read<UserssBloc>().add(GetUserss());
-
-            //     // final result = await service.getUsersDataWithModel();
-            //     // setState(() {
-            //     //   users = result;
-            //     // });
-            //     // print(users);
-            //   },
-            //   child: Text("Get Data"),
-            // ),
-            BlocBuilder<UserssBloc, UserssState>(
+            BlocBuilder<ProductBloc, ProductState>(
               builder: (context, state) {
-                if (state is UserssLoading) {
+                if (state is ProductLoading) {
                   return Center(child: CircularProgressIndicator());
                 }
-                if (state is UserssError) {
+                if (state is ProductError) {
                   return Center(child: Text("Error"));
                 }
-                if (state is UserssLoaded) {
+                if (state is ProductLoaded) {
                   return Expanded(
                     child: ListView.builder(
                       itemCount: state.data.length,
@@ -149,19 +173,15 @@ class _FirebaseUserState extends State<FirebaseUser> {
                           leading: IconButton(
                             onPressed: () {
                               nameUpdateController.text = user.name;
-                              emailUpdateController.text = user.email;
+                              priceUpdateController.text = "${user.price}";
                               showUpdataBottomSheet(user.id ?? "");
                             },
                             icon: Icon(Icons.edit),
                           ),
                           title: Text(user.name),
-                          subtitle: Text(user.email),
+                          subtitle: Text("${user.price}"),
                           trailing: IconButton(
-                            onPressed: () {
-                              context.read<UserssBloc>().add(
-                                DeleteUser(user.id ?? ''),
-                              );
-                            },
+                            onPressed: () {},
                             icon: Icon(Icons.delete, color: Colors.red),
                           ),
                         );
@@ -172,15 +192,6 @@ class _FirebaseUserState extends State<FirebaseUser> {
                 return SizedBox.shrink();
               },
             ),
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: users.length,
-            //     itemBuilder: (context, index) {
-            //       final user = users[index];
-            //       return ListTile(title: Text(user['name']));
-            //     },
-            //   ),
-            // ),
           ],
         ),
       ),

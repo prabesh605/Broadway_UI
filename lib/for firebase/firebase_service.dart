@@ -34,9 +34,25 @@ class FirebaseService {
     try {
       final querySnapshot = await usersCollection.get();
       return querySnapshot.docs.map((doc) {
-        return UserFirebaseModel.fromJson(doc.data());
+        return UserFirebaseModel.fromJson(doc.id, doc.data());
       }).toList();
       // return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> deletUserss(String id) async {
+    try {
+      await usersCollection.doc(id).delete();
+      // final querySnapshot = await usersCollection.get();
+      // querySnapshot.docs.where((e) => e.id == uid);
+    } catch (e) {}
+  }
+
+  Future<void> updateUserss(UserFirebaseModel data) async {
+    try {
+      await usersCollection.doc(data.id).update(data.toJson());
     } catch (e) {
       throw Exception(e.toString());
     }

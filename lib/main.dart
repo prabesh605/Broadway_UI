@@ -16,6 +16,9 @@ import 'package:broadway_example_ui/login_screen.dart';
 import 'package:broadway_example_ui/mobile/mobile_screen.dart';
 import 'package:broadway_example_ui/next_screen.dart';
 import 'package:broadway_example_ui/note/note_screen.dart';
+import 'package:broadway_example_ui/product%20firebase/product_bloc.dart';
+import 'package:broadway_example_ui/product%20firebase/product_firebase_service.dart';
+import 'package:broadway_example_ui/product%20firebase/product_screen.dart';
 import 'package:broadway_example_ui/provider/counter_provider.dart';
 import 'package:broadway_example_ui/provider/counter_screen_with_provider.dart';
 import 'package:broadway_example_ui/provider/counter_screen_without.dart';
@@ -53,6 +56,7 @@ Future<void> main() async {
           create: (_) => WeatherBloc(WeatherService(), WeatherBrain()),
         ),
         BlocProvider(create: (_) => UserssBloc(FirebaseService())),
+        BlocProvider(create: (_) => ProductBloc(ProductFirebaseService())),
         // ChangeNotifierProvider(create: (_) => CounterProvider()),
         // ChangeNotifierProvider(create: (_) => ThemeProvider()),
         // ChangeNotifierProvider(create: (_) => TaskProvider()),
@@ -75,7 +79,7 @@ class MyApp extends StatelessWidget {
           themeMode: state,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
-          home: FirebaseUser(),
+          home: ProductScreen(),
         );
       },
     );
