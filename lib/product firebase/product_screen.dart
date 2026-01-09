@@ -3,6 +3,7 @@ import 'package:broadway_example_ui/for%20firebase/userss_bloc.dart';
 import 'package:broadway_example_ui/for%20firebase/userss_state.dart';
 import 'package:broadway_example_ui/product%20firebase/product_bloc.dart';
 import 'package:broadway_example_ui/product%20firebase/product_event.dart';
+import 'package:broadway_example_ui/product%20firebase/product_firebase_service.dart';
 import 'package:broadway_example_ui/product%20firebase/product_model.dart';
 import 'package:broadway_example_ui/product%20firebase/product_state.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   // List<UserFirebaseModel> users = [];
-  FirebaseService service = FirebaseService();
+  ProductFirebaseService service = ProductFirebaseService();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final imageController = TextEditingController();
@@ -31,6 +32,7 @@ class _ProductScreenState extends State<ProductScreen> {
   void initState() {
     super.initState();
     context.read<ProductBloc>().add(GetProducts());
+    // context.read<ProductBloc>().add(StreamProducts());
   }
 
   void showUpdataBottomSheet(String id) {
@@ -55,7 +57,7 @@ class _ProductScreenState extends State<ProductScreen> {
               TextFormField(
                 controller: priceUpdateController,
                 decoration: InputDecoration(
-                  label: Text("Email"),
+                  label: Text("Price"),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -79,14 +81,18 @@ class _ProductScreenState extends State<ProductScreen> {
               ElevatedButton(
                 onPressed: () {
                   final name = nameUpdateController.text;
-                  final email = priceUpdateController.text;
-                  // final data = UserFirebaseModel(
-                  //   id: id,
-                  //   name: name,
-                  //   email: email,
-                  // );
-                  // context.read<UserssBloc>().add(UpdateUserss(data));
-                  // service.updateUserss(data);
+                  final price = priceUpdateController.text;
+                  final image = imageUpdateController.text;
+                  final description = descriptionUpdateController.text;
+                  final data = ProductModel(
+                    id: id,
+                    name: name,
+                    price: double.parse(price),
+                    image: image,
+                    description: description,
+                  );
+                  context.read<ProductBloc>().add(UpdateProduct(data));
+
                   Navigator.pop(context);
                 },
                 child: Text("Update"),
@@ -102,7 +108,7 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Users")),
+      appBar: AppBar(title: Text("Product")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -155,6 +161,64 @@ class _ProductScreenState extends State<ProductScreen> {
               child: Text("Save"),
             ),
 
+            // StreamBuilder(
+            //   stream: service.getProductStream(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return Center(child: CircularProgressIndicator());
+            //     } else if (snapshot.hasError) {
+            //       return Center(child: Text('Error: ${snapshot.error}'));
+            //     } else if (snapshot.connectionState == ConnectionState.done) {
+            //       return Text("Stream done");
+            //     } else {
+            //       final responseData = snapshot.data ?? [];
+
+            //       return Expanded(
+            //         child: ListView.builder(
+            //           itemCount: responseData.length,
+            //           itemBuilder: (context, index) {
+            //             final user = responseData[index];
+            //             return Row(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               children: [
+            //                 IconButton(
+            //                   onPressed: () {
+            //                     nameUpdateController.text = user.name;
+            //                     priceUpdateController.text = "${user.price}";
+            //                     showUpdataBottomSheet(user.id ?? "");
+            //                   },
+            //                   icon: Icon(Icons.edit),
+            //                 ),
+
+            //                 Container(
+            //                   height: 60,
+            //                   width: 60,
+            //                   child: Image.network(
+            //                     "${user.image}",
+            //                     fit: BoxFit.cover,
+            //                   ),
+            //                 ),
+            //                 SizedBox(width: 20),
+            //                 Column(
+            //                   children: [
+            //                     Text(user.name),
+            //                     Text("${user.price}"),
+            //                     Text("${user.description}"),
+            //                     IconButton(
+            //                       onPressed: () {},
+            //                       icon: Icon(Icons.delete, color: Colors.red),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ],
+            //             );
+            //           },
+            //         ),
+            //       );
+            //     }
+            //     // return
+            //   },
+            // ),
             BlocBuilder<ProductBloc, ProductState>(
               builder: (context, state) {
                 if (state is ProductLoading) {
@@ -169,21 +233,39 @@ class _ProductScreenState extends State<ProductScreen> {
                       itemCount: state.data.length,
                       itemBuilder: (context, index) {
                         final user = state.data[index];
-                        return ListTile(
-                          leading: IconButton(
-                            onPressed: () {
-                              nameUpdateController.text = user.name;
-                              priceUpdateController.text = "${user.price}";
-                              showUpdataBottomSheet(user.id ?? "");
-                            },
-                            icon: Icon(Icons.edit),
-                          ),
-                          title: Text(user.name),
-                          subtitle: Text("${user.price}"),
-                          trailing: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.delete, color: Colors.red),
-                          ),
+                        return Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                nameUpdateController.text = user.name;
+                                priceUpdateController.text = "${user.price}";
+                                imageUpdateController.text = user.image;
+                                descriptionController.text = user.description;
+
+                                showUpdataBottomSheet(user.id ?? "");
+                              },
+                              icon: Icon(Icons.edit),
+                            ),
+                            Container(
+                              height: 60,
+                              width: 60,
+                              child: Image.network(
+                                "${user.image}",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Text(user.name),
+                            Text("${user.price}"),
+                            Text("${user.description}"),
+                            IconButton(
+                              onPressed: () {
+                                context.read<ProductBloc>().add(
+                                  DeleteProduct(user.id ?? ""),
+                                );
+                              },
+                              icon: Icon(Icons.delete, color: Colors.red),
+                            ),
+                          ],
                         );
                       },
                     ),

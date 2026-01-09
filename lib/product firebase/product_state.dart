@@ -11,6 +11,11 @@ class ProductLoaded extends ProductState {
   ProductLoaded(this.data);
 }
 
+class ProductLoadedStream extends ProductState {
+  final Stream<List<ProductModel>> data;
+  ProductLoadedStream(this.data);
+}
+
 class ProductError extends ProductState {
   String message;
   ProductError(this.message);

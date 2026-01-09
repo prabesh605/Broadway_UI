@@ -21,4 +21,32 @@ class ProductFirebaseService {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> deleteProduct(String id) async {
+    try {
+      await productCollection.doc(id).delete();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> updateProduct(ProductModel data) async {
+    try {
+      await productCollection.doc(data.id).update(data.toJson());
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Stream<List<ProductModel>> getProductStream() {
+    try {
+      return productCollection.snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return ProductModel.fromJson(doc.id, doc.data());
+        }).toList();
+      });
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
