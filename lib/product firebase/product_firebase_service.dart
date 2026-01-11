@@ -1,5 +1,6 @@
 import 'package:broadway_example_ui/product%20firebase/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProductFirebaseService {
   final productCollection = FirebaseFirestore.instance.collection("product");
@@ -48,5 +49,41 @@ class ProductFirebaseService {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<String> signIn(String email, String password) async {
+    try {
+      final response = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return response.user?.uid ?? "";
+      // print(response);
+    } catch (e) {
+      return '';
+      // throw Exception(e.toString());
+    }
+  }
+
+  Future<String> signUp(String email, String password) async {
+    try {
+      final response = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      print(response);
+      return response.user?.uid ?? "";
+      // print(response);
+    } catch (e) {
+      return '';
+      // throw Exception(e.toString());
+    }
+  }
+
+  Future<void> logout() async {
+    final response = await FirebaseAuth.instance.signOut();
+  }
+
+  Future<String> currentUser() async {
+    final response = await FirebaseAuth.instance.currentUser;
+    return response?.uid ?? "";
   }
 }

@@ -19,4 +19,9 @@ class UpdateProduct extends ProductEvent {
   UpdateProduct(this.data);
 }
 
-class StreamProducts extends ProductEvent {}
+class LoadProducts extends ProductEvent {}
+
+class StreamProducts extends ProductEvent {
+  final List<ProductModel> products; 
+  StreamProducts(this.products);
+}

@@ -16,6 +16,7 @@ import 'package:broadway_example_ui/login_screen.dart';
 import 'package:broadway_example_ui/mobile/mobile_screen.dart';
 import 'package:broadway_example_ui/next_screen.dart';
 import 'package:broadway_example_ui/note/note_screen.dart';
+import 'package:broadway_example_ui/product%20firebase/login_page.dart';
 import 'package:broadway_example_ui/product%20firebase/product_bloc.dart';
 import 'package:broadway_example_ui/product%20firebase/product_firebase_service.dart';
 import 'package:broadway_example_ui/product%20firebase/product_screen.dart';
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
           themeMode: state,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
-          home: ProductScreen(),
+          home: LoginPageFirebase(),
         );
       },
     );

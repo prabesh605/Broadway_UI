@@ -1,11 +1,13 @@
 import 'package:broadway_example_ui/for%20firebase/firebase_service.dart';
 import 'package:broadway_example_ui/for%20firebase/userss_bloc.dart';
 import 'package:broadway_example_ui/for%20firebase/userss_state.dart';
+import 'package:broadway_example_ui/product%20firebase/login_page.dart';
 import 'package:broadway_example_ui/product%20firebase/product_bloc.dart';
 import 'package:broadway_example_ui/product%20firebase/product_event.dart';
 import 'package:broadway_example_ui/product%20firebase/product_firebase_service.dart';
 import 'package:broadway_example_ui/product%20firebase/product_model.dart';
 import 'package:broadway_example_ui/product%20firebase/product_state.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,8 +33,8 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(GetProducts());
-    // context.read<ProductBloc>().add(StreamProducts());
+    // context.read<ProductBloc>().add(GetProducts());
+    context.read<ProductBloc>().add(LoadProducts());
   }
 
   void showUpdataBottomSheet(String id) {
@@ -79,7 +81,7 @@ class _ProductScreenState extends State<ProductScreen> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final name = nameUpdateController.text;
                   final price = priceUpdateController.text;
                   final image = imageUpdateController.text;
@@ -91,9 +93,12 @@ class _ProductScreenState extends State<ProductScreen> {
                     image: image,
                     description: description,
                   );
-                  context.read<ProductBloc>().add(UpdateProduct(data));
+                  final uid = await service.currentUser();
+                  if (uid.isNotEmpty) {
+                    context.read<ProductBloc>().add(UpdateProduct(data));
 
-                  Navigator.pop(context);
+                    Navigator.pop(context);
+                  }
                 },
                 child: Text("Update"),
               ),
@@ -108,7 +113,21 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Product")),
+      appBar: AppBar(
+        title: Text("Product"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPageFirebase()),
+              );
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -233,39 +252,66 @@ class _ProductScreenState extends State<ProductScreen> {
                       itemCount: state.data.length,
                       itemBuilder: (context, index) {
                         final user = state.data[index];
-                        return Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                nameUpdateController.text = user.name;
-                                priceUpdateController.text = "${user.price}";
-                                imageUpdateController.text = user.image;
-                                descriptionController.text = user.description;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      nameUpdateController.text = user.name;
+                                      priceUpdateController.text =
+                                          "${user.price}";
+                                      imageUpdateController.text = user.image;
+                                      descriptionController.text =
+                                          user.description;
 
-                                showUpdataBottomSheet(user.id ?? "");
-                              },
-                              icon: Icon(Icons.edit),
-                            ),
-                            Container(
-                              height: 60,
-                              width: 60,
-                              child: Image.network(
-                                "${user.image}",
-                                fit: BoxFit.cover,
+                                      showUpdataBottomSheet(user.id ?? "");
+                                    },
+                                    icon: Icon(Icons.edit),
+                                  ),
+                                  Row(
+                                    // mainAxisAlignment:
+                                    //     MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 60,
+                                        width: 60,
+                                        child: Image.network(
+                                          "${user.image}",
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(user.name),
+                                          Text("${user.price}"),
+                                          Text("${user.description}"),
+                                        ],
+                                      ),
+                                      SizedBox(width: 40),
+                                      IconButton(
+                                        onPressed: () {
+                                          context.read<ProductBloc>().add(
+                                            DeleteProduct(user.id ?? ""),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(user.name),
-                            Text("${user.price}"),
-                            Text("${user.description}"),
-                            IconButton(
-                              onPressed: () {
-                                context.read<ProductBloc>().add(
-                                  DeleteProduct(user.id ?? ""),
-                                );
-                              },
-                              icon: Icon(Icons.delete, color: Colors.red),
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       },
                     ),
