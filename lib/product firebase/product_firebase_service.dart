@@ -1,9 +1,12 @@
 import 'package:broadway_example_ui/product%20firebase/product_model.dart';
+import 'package:broadway_example_ui/product%20firebase/user_model_firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart';
 
 class ProductFirebaseService {
   final productCollection = FirebaseFirestore.instance.collection("product");
+  final userCollection = FirebaseFirestore.instance.collection('user');
   Future<void> addProduct(ProductModel data) async {
     try {
       await productCollection.add(data.toJson());
@@ -83,7 +86,20 @@ class ProductFirebaseService {
   }
 
   Future<String> currentUser() async {
-    final response = await FirebaseAuth.instance.currentUser;
-    return response?.uid ?? "";
+    try {
+      final response = await FirebaseAuth.instance.currentUser;
+      return response?.uid ?? "";
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Future<void> saveUser(UserModelFirebase user) async {
+    try {
+      final response = await userCollection.add(user.toJson());
+      print(response);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }

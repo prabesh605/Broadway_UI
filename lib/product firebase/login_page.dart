@@ -16,6 +16,22 @@ class _LoginPageFirebaseState extends State<LoginPageFirebase> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   @override
+  void initState() {
+    super.initState();
+    checkUserLogin();
+  }
+
+  Future<void> checkUserLogin() async {
+    final uid = await service.currentUser();
+    if (uid.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProductScreen()),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueAccent,

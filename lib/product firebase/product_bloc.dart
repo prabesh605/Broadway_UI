@@ -55,9 +55,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       );
     });
   }
-  // @override
-  // Future<void> close() {
-  //   subscription?.cancel();
-  //   return super.close();
-  // }
+  @override
+  Future<void> close() {
+    subscription?.cancel();
+    return super.close();
+  }
 }

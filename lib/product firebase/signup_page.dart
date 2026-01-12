@@ -1,5 +1,6 @@
 import 'package:broadway_example_ui/product%20firebase/product_firebase_service.dart';
 import 'package:broadway_example_ui/product%20firebase/product_screen.dart';
+import 'package:broadway_example_ui/product%20firebase/user_model_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -54,6 +55,13 @@ class _SignupPageFirebaseState extends State<SignupPageFirebase> {
                 //   passwordController.text,
                 // );
                 if (userID.isNotEmpty) {
+                  await service.saveUser(
+                    UserModelFirebase(
+                      id: '',
+                      email: emailController.text,
+                      role: "user",
+                    ),
+                  );
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => ProductScreen()),
