@@ -96,8 +96,13 @@ class ProductFirebaseService {
 
   Future<void> saveUser(UserModelFirebase user) async {
     try {
-      final response = await userCollection.add(user.toJson());
-      print(response);
+      // final response = await userCollection.add(user.toJson());
+      // print(response);
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) throw Exception("No user signed in");
+
+      await userCollection.doc(uid).set(user.toJson());
+      print("User saved with UID: $uid");
     } catch (e) {
       throw Exception(e.toString());
     }

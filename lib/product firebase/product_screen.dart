@@ -7,6 +7,8 @@ import 'package:broadway_example_ui/product%20firebase/product_event.dart';
 import 'package:broadway_example_ui/product%20firebase/product_firebase_service.dart';
 import 'package:broadway_example_ui/product%20firebase/product_model.dart';
 import 'package:broadway_example_ui/product%20firebase/product_state.dart';
+import 'package:broadway_example_ui/product%20firebase/upload_image_page.dart';
+import 'package:broadway_example_ui/product%20firebase/upload_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +23,8 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   // List<UserFirebaseModel> users = [];
   ProductFirebaseService service = ProductFirebaseService();
+
+  UploadService uploadService = UploadService();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final imageController = TextEditingController();
@@ -148,12 +152,29 @@ class _ProductScreenState extends State<ProductScreen> {
               ),
             ),
             SizedBox(height: 20),
-            TextFormField(
-              controller: imageController,
-              decoration: InputDecoration(
-                label: Text("Image"),
-                border: OutlineInputBorder(),
-              ),
+            Row(
+              children: [
+                // SizedBox(width: 100),
+                Expanded(
+                  child: TextFormField(
+                    controller: imageController,
+                    decoration: InputDecoration(
+                      label: Text("Image"),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    final imageUrl = await uploadService.pickImage();
+                    setState(() {
+                      imageController.text = imageUrl ?? '';
+                    });
+                  },
+                  child: Text("Upload"),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             TextFormField(
@@ -178,6 +199,15 @@ class _ProductScreenState extends State<ProductScreen> {
                 priceController.clear();
               },
               child: Text("Save"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UploadImagePage()),
+                );
+              },
+              child: Text("Image Page"),
             ),
 
             // StreamBuilder(
