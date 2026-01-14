@@ -80,6 +80,7 @@ class MyApp extends StatelessWidget {
           themeMode: state,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
+          // home: PhonePage(),
           home: LoginPageFirebase(),
           // home: ProductScreen(),
         );

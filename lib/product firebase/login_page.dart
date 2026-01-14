@@ -90,6 +90,17 @@ class _LoginPageFirebaseState extends State<LoginPageFirebase> {
               },
               child: Text("Create New Account"),
             ),
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                service.signInWithGoogle();
+              },
+              child: Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(12),
+                child: Text("SignIn With Google"),
+              ),
+            ),
           ],
         ),
       ),

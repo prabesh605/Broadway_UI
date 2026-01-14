@@ -3,10 +3,12 @@ import 'package:broadway_example_ui/product%20firebase/user_model_firebase.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProductFirebaseService {
   final productCollection = FirebaseFirestore.instance.collection("product");
   final userCollection = FirebaseFirestore.instance.collection('user');
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   Future<void> addProduct(ProductModel data) async {
     try {
       await productCollection.add(data.toJson());
@@ -107,4 +109,20 @@ class ProductFirebaseService {
       throw Exception(e.toString());
     }
   }
+
+  Future<User?> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return null;
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithCredential(credential);
+    return userCredential.user;
+  }
+  //sign with phone 
 }
